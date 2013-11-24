@@ -40,60 +40,69 @@ using namespace std;
  * 
  */
 
-const double PI          =3.141592653589793238462643;      // pi 
-const int    MAX_LAPORDER=60;
+const double PI           = 3.141592653589793238462643;      
+const int    MAX_LAPORDER = 60;
 
 int test_case=1;
 inline void  upperswap(double &u,const double v){if (v>u){u=v;}}
 
-
-std::complex<double> RazvanLaplaceMystery(double X, double Y)
-{
-    std::complex<double> result(0, 0);
-    std::complex<double> s(X, Y);
-    std::complex<double> one(1, 0);
-    std::complex<double> two(2, 0);
-    std::complex<double> three(3, 0);
-    std::complex<double> four(4, 0);
-    std::complex<double> six(6, 0);
-    std::complex<double> eleven(11, 0);
-    std::complex<double> twenty_four(24, 0);
-    
-    result = (six * exp(-four*s)*(exp(two*s)*(s-one)+s+one)+twenty_four*exp(-eleven*s)*(sinh(s)-s*cosh(s)))/pow(s,three);
-    
-    return result;
-}
-
+/*
+ * The function is supposed to test the correctness of the Laplace Inverse using
+ * Talbot's algorithm.
+ */
 void test_talbot()
 {
     double t[100], y[100];
-    double a0 = 1, b0 = 5, h, m;
-    
-    std::complex<double> s(11,11);
-    cout << "Inverse Laplace starts here" << endl;
-    m = 100;
+    double a0 = 0.1, b0 = 15, h, m = 20.0;
     h = abs(b0-a0)/(m - 1);
+    
+    cout << "Inverse Laplace (Talbot) starts here" << endl;
 
     for (int i = 1; i <= m; i++)
     {
         y[i] = 0;
         t[i] = a0 + (i-1) * h; 
     }
-    //                                       (std::complex<double> s, int n, double shift, int m, double *t, double *y);
-    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(s, 100, 0.1, m, t, y) << endl;
+    
+    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(20, 0.01, m, t, y) << endl;
 
     for (int i = 1; i <= m; i++) 
     {
-        cout.precision(32); 
+        cout.precision(10); 
         cout << t[i]<<"  "; 
-        cout.precision(32); 
+        cout.precision(10); 
         cout<< y[i]<<endl;
     }
-
 }
 
+/*
+ * The function is supposed to test the correctness of the Laplace Inverse using
+ * the EULER algorithm.
+ */
+void test_euler()
+{
+    double t[100], y[100];
+    double a0 = 0.1, b0 = 15, h, m = 20.0;
+    h = abs(b0-a0)/(m - 1);
+    
+    cout << "Inverse Laplace (Euler) starts here" << endl;
 
+    for (int i = 1; i <= m; i++)
+    {
+        y[i] = 0;
+        t[i] = a0 + (i-1) * h; 
+    }
+    //double c, int n, int m, int l, double A, int anz, double *t, double *y
+    cout<< euler_algorithm_serial::LaplaceInverseEulerSerial(0.1, 20, 20, 20, 18.4, 10, t, y) << endl;
 
+    for (int i = 1; i <= m; i++) 
+    {
+        cout.precision(10); 
+        cout << t[i]<<"  "; 
+        cout.precision(10); 
+        cout<< y[i]<<endl;
+    }
+}
 
 
 
@@ -101,10 +110,10 @@ int main()
 {
   cout << "Welcome, agent(s)! Best of luck." << endl;
   cout<< L(11, 11)<<endl;
-  
+
   test_talbot();  
-  
-  
+  test_euler();
+
   return 0;
 }
 

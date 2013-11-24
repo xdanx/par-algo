@@ -9,7 +9,7 @@ using namespace std;
 const double PI          =3.141592653589793238462643;   
 double talbot_algorithm_serial::cotan(double x) 
 { 
-    return tan(M_PI_2 - x); 
+    return 1.0/tan(x); 
 }
 
 double talbot_algorithm_serial::cosec(double x)
@@ -17,7 +17,7 @@ double talbot_algorithm_serial::cosec(double x)
     return 1.0/sin(x);
 } 
 
-double talbot_algorithm_serial::LaplaceInverseTalbotSerial(std::complex<double> s, int n, double shift, int m, double *t, double *y)
+double talbot_algorithm_serial::LaplaceInverseTalbotSerial(int n, double shift, int m, double *t, double *y)
 {
 	complex <double> ans, z, dz, res, aux;
 	double theta, h;

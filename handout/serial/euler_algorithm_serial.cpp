@@ -2,59 +2,103 @@
 #include <complex>
 #include <iostream>
 #include "euler_algorithm_serial.h"
+#include "../mystery.h"
 
 using namespace std;
 
 /*----------------------------------------------------------------------------*/
 /*--------------------------------EULER---------------------------------------*/
 /*----------------------------------------------------------------------------*/
-
-double euler_algorithm_serial::LaplaceInversionEuler(std::complex<double> s)
+const double PI = 3.141592653589793238462643;  
+double binomial_coefficients(int n, int k)
 {
-    double sum[13];
-    double Err   = 0;
-    double Fun   = 0;
-    double Fun1  = 0;
-    double avgsu = 0;
-    double avgsu1= 0; 
-    double sum1  = 0;
-    double C[12] = {1, 11, 55, 165, 330, 462, 462, 330, 165, 55, 11, 1};
-    double A     = 18.4;
-    double NTR   = 15;
-    double T     = 1;     /* time */ 
-    double U     = pow(M_E, A/2)/T;
-    double X     = A/(2*T);
-    double H     = M_PI/T;
-    return 0;
-    
-    sum1  = 0;
-    for(int N = 1; N<= NTR; N++)
-        sum1 += pow(-1, N)*real(s);
-    sum[1] = sum1;
-    
-    for(int K = 1; K<= 12; K++)
-    {
-        int N = NTR+K;
-        int Y = N*H;
-        sum[K+1] = sum[K]+pow(-1, N)*real(s);
+    int i;
+    double result;
+
+    if (k < 0 || k > n) 
+       return 0.0;
+
+    if (k == 0 || k == n) 
+       return 1.0;
+
+    if (2*k > n) 
+       result = binomial_coefficients(n, n-k);
+    else 
+    { 
+       result = (double) n-k+1;
+       for (i = 2; i <= k; i++) 
+       {
+           result = result*(double)(n - k + i);
+           result = result/(double)i;
+       }
     }
-    
-    for(int J = 1; J<= 12; J++)
-    {
-        avgsu  += C[J] + sum[J];
-        avgsu1 += C[J] + sum[J+1];
-    }   
-        
-    Fun  = U*avgsu /2048;
-    Fun1 = U*avgsu1/2048;
-    
-    Err  = abs(Fun- Fun1)/2;
-    
-    cout<< "LaplaceInverse Euler: "<< Fun<<endl;
-    cout<< "Error margin: "<< Err << endl;
+    return result;
 }
 
 
+double euler_algorithm_serial::LaplaceInverseEulerSerial(double c, int n,   int m,     int l, 
+                                                           double A, int anz, double *t, double *y)
+{
+    double binomial_coefficients(int n, int k);
+    int i, j, k;
+    double factor, quot;
+    double binomial[m];
+    double rea[n + l*m];
+    double reb[n];
+	
+    /* compute binomial coefficients */
+    if (m > 0) 
+        for (i = 0; i <= m; i++)
+            binomial[i] = binomial_coefficients(m, i);
+
+    factor = exp(A/(2*l))/(2*l);
+    quot   = pow(2.0, m);
+    
+    /* Loop over all eval. points t[i] */
+    for (i = 1; i <= anz; i++) 
+    {
+        double tx = t[i];
+        std::complex<double> zp, zm, zzp, zzm, prodp, prodm, s;
+        std::complex<double> sum(0.0,0.0);
+        
+	zp = L(c + A/(2.0*l*tx),0);
+        sum += zp*factor/tx;
+	rea[0] = real(sum);
+        for (k = 1; k <= n + l*m; k++)
+        {
+            zp = L(c + A/(2.0*l*tx), k*PI/(l*tx));
+            zm = std::complex<double>(real(zp),-imag(zp));
+	    zzp = exp(std::complex<double>(0,k*PI/l));
+            zzm = std::complex<double>(real(zzp),-imag(zzp));
+            prodp = zp*zzp;
+            prodm = zm*zzm;
+            s = prodp + prodm;
+
+            sum += s*factor/tx;			
+            rea[k] = real(sum);
+	}
+        y[i] = rea[n];		
+		
+	/* compute Euler summation */
+        for (k = 0; k <= n; k++) 
+        {
+            double sum = 0.0;
+            for (j = 0; j <= m; j++)
+                sum += rea[k + l*j]*binomial[j];
+            reb[k] = sum/quot; 
+	}
+        y[i] = reb[m];
+    }
+
+
+    /* correct exponential order */
+    if (c != 0.0) 
+    {
+        for (i = 1; i <= anz; i++) 
+            y[i] = exp(c*t[i])*y[i];	
+    }
+    return 0;
+}
 /*----------------------------------------------------------------------------*/
 /*--------------------------------EULER---------------------------------------*/
 /*----------------------------------------------------------------------------*/
