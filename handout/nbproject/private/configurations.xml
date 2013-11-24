@@ -15,7 +15,6 @@
         <in>talbot_algorithm_serial.h</in>
       </df>
       <in>mystery.h</in>
-      <in>parallel_laplace.cpp</in>
       <in>smartdec_mystery.cpp</in>
       <in>start.cpp</in>
     </df>

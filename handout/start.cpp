@@ -64,10 +64,47 @@ std::complex<double> RazvanLaplaceMystery(double X, double Y)
     return result;
 }
 
+void test_talbot()
+{
+    double t[100], y[100];
+    double a0 = 1, b0 = 5, h, m;
+    
+    std::complex<double> s(11,11);
+    cout << "Inverse Laplace starts here" << endl;
+    m = 100;
+    h = abs(b0-a0)/(m - 1);
+
+    for (int i = 1; i <= m; i++)
+    {
+        y[i] = 0;
+        t[i] = a0 + (i-1) * h; 
+    }
+    //                                       (std::complex<double> s, int n, double shift, int m, double *t, double *y);
+    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(s, 100, 0.1, m, t, y) << endl;
+
+    for (int i = 1; i <= m; i++) 
+    {
+        cout.precision(32); 
+        cout << t[i]<<"  "; 
+        cout.precision(32); 
+        cout<< y[i]<<endl;
+    }
+
+}
+
+
+
+
+
+
 int main() 
 {
   cout << "Welcome, agent(s)! Best of luck." << endl;
   cout<< L(11, 11)<<endl;
+  
+  test_talbot();  
+  
+  
   return 0;
 }
 

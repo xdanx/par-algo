@@ -10,9 +10,9 @@
         <in>euler_algorithm_serial.cpp</in>
         <in>euler_algorithm_serial.h</in>
         <in>talbot_algorithm_serial.cpp</in>
+        <in>talbot_algorithm_serial.h</in>
       </df>
       <in>mystery.h</in>
-      <in>parallel_laplace.cpp</in>
       <in>start.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -45,6 +45,13 @@
           <executablePath>start</executablePath>
         </makeTool>
       </makefileType>
+      <folder path="handout/serial">
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <item path="mystery.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="parallel/euler_algorithm_parallel.cpp"
@@ -61,22 +68,15 @@
         <ccTool>
         </ccTool>
       </item>
-      <item path="parallel_laplace.cpp" ex="false" tool="0" flavor2="2">
-        <cTool>
-        </cTool>
-      </item>
       <item path="serial/euler_algorithm_serial.cpp" ex="false" tool="1" flavor2="0">
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
       </item>
       <item path="serial/euler_algorithm_serial.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="serial/talbot_algorithm_serial.cpp" ex="false" tool="1" flavor2="4">
         <ccTool>
         </ccTool>
+      </item>
+      <item path="serial/talbot_algorithm_serial.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="start.cpp" ex="false" tool="1" flavor2="0">
       </item>
