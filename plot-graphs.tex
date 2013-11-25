@@ -1,0 +1,113 @@
+% Initialise
+\newcommand{\xlabel}{\@empty}
+\newcommand{\ylabel}{\@empty}
+
+%xlabel, ylabel, y expression (may use \numprocs)
+\newcommand{\createplot}[3]{
+
+	% Variables
+	\renewcommand{\xlabel}{#1}
+	\renewcommand{\ylabel}{#2}
+
+
+	%%%% Create plot
+	\begin{tikzpicture}
+	\begin{axis}[
+	xmin = 0,
+	ymin = 0,
+	xlabel = \xlabel,
+	ylabel = \ylabel,
+	% legend
+	legend style={at={(1,0.5)},anchor=east}
+	]
+
+
+	% Initialise variables
+	\newcommand{\plotme}[2] {
+		% ##1 = color
+		% ##2 = num processors
+		\def \numprocs {##2}
+
+		\addplot
+		% [
+		% color = ##1,
+		% mark = x,
+		% only marks,
+		% smooth  % draw smooth curve
+		% ]
+		table [
+		#3
+		] {timings.csv};
+
+		\addlegendentry{\textbf{##2 processor}} ;
+	}
+
+	% Lines to plot
+	\plotme{red}{1}
+	\plotme{blue}{2}
+	\plotme{green}{4}
+	\plotme{black}{8}
+
+	\end{axis}
+	\end{tikzpicture}
+}
+
+
+
+
+% Plot graphs
+
+
+\begin{figure}[h]
+    \centering
+\createplot{Work}{Runtime (s)}{y = \numprocs-proc}
+\createplot{Work}{Normalised runtime (\%)}{y expr= 100 * \thisrow{\numprocs-proc} / \thisrow{1-proc}}
+    \caption{Comparison of runtime for different number of processors}
+    \label{fig:plot-runtime}
+\end{figure}
+
+
+
+\begin{figure}[h]
+    \centering
+	\createplot{Work}{Speedup (\%)}{y expr= 100 * \thisrow{1-proc} / \thisrow{\numprocs-proc}}
+    \caption{Comparison of speedup and efficiency for different number of processors}
+    \label{fig:plot-speedup}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+	\createplot{Work}{Efficiency (\%)}{y expr= 100 * \thisrow{1-proc} / ( \numprocs * \thisrow{\numprocs-proc} )}
+    \caption{Comparison of speedup and efficiency for different number of processors}
+    \label{fig:plot-efficiency}
+\end{figure}
+
+
+% Table
+\begin{figure}[h]
+    \centering
+
+	\pgfplotstabletypesetfile[
+		% Header names
+		columns/work/.style={column name=\textsc{Work}},
+		columns/1-proc/.style={column name=\textsc{1}},
+		columns/2-proc/.style={column name=\textsc{2}},
+		columns/4-proc/.style={column name=\textsc{4}},
+		columns/8-proc/.style={column name=\textsc{8}},
+		% Lines
+		every head row/.style={
+		before row={%
+		\toprule
+		 & \multicolumn{4}{c}{Number of processors}\\
+		},
+		after row=\midrule,
+		},
+		every last row/.style={after row=\bottomrule}
+	]{timings.csv}
+
+    \caption{Measured runtimes for different number of processors}
+    \label{fig:table-runtime}
+\end{figure}
+
+

@@ -1,0 +1,9 @@
+% Timings for serial and parallel runtimes
+% THESE ARE FAKE FOR NOW!!!
+work	1-proc	2-proc	4-proc	8-proc
+0	10	8	6	4
+1	20	17	14	11
+2	30	24	20	17
+3	40	32	27	23
+4	50	41	38	34
+5	60	52	46	42
