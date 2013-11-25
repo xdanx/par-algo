@@ -1,0 +1,42 @@
+Some time was spent nvestigating the $Laplace$ $Transform$. Directly, the transform can be given in the following way:
+$F(s) =\int_0^\infty \! f(t)e^{-st} \, \mathrm{d}t$.
+
+Since we have established that we need to find the inverse transform, we notice the fact that:
+$f(t) =\int_0^\infty \! F(s)e^{st} \, \mathrm{d}t$. Oh Baby ...
+\newline
+
+We are facing the following problem:
+\begin{itemize}
+\item{we do not know the analytical expression of the function $F$. }
+\item{the $mistery.o$ file only allows for evaluation of the function at some points passed as inputs. }
+\end{itemize}
+
+Therefore, we have realised that we need to perform numerical inverse of $Inverse$ $Laplace$ $transform$.
+The paper offered us a valuable introduction to the problem that we were facing.
+The $EULER$ algorithm was a starting point, and we proceed to the implementation step:
+
+\subsection{EULER Algorithm}
+$EULER$ Algorithm can be summarised by the following formula:
+$f(t) = \frac{e^{A/2}}{2t} \sum\limits_{k=-\infty}^\infty {(-1)^k Re F(\frac{A+2k\pi i}{2t} }$
+
+The algorithm, introduced by the $Abate$ in 1968\cite{abate}. 
+The input of the algorithm consists in a series of parameters.
+In our implementation, we provide an array of points $t$ where the 
+function $f$ must be evaluated. The result of the evaluation is returned
+in the array $f_t$.
+
+We select the input points of $t$ in the following way: given the left and
+an upper bound, choose a number of points and divide the interval 
+to the number of points. 
+
+The $EULER$ algorithm makes use of the binomial coefficients, and in order 
+to calculate them, we pass the order($m$) of the binomial as a parameter.
+Also, since the inversion of the $Laplace$ transform requires the computation
+of an integral in the continuous case, we have to compute a sum for the discrete
+case. The parameter $n$ of the function call will give the number of elements under the
+$\sum$ symbol.
+
+Using the parameter $A$, as shown in \cite{abate}, one can vary the precision of the approximation.
+
+
+
