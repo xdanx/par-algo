@@ -20,7 +20,7 @@ inline void  upperswap(double &u,const double v){if (v>u){u=v;}}
 void test_talbot()
 {
     double t[100], f_t[100];
-    double left = 1, right = 120, h, number_points = 50;
+    double left = 1, right = 12, h, number_points = 50;
     h = abs(right-left)/(number_points - 1);
     
     cout << "Inverse Laplace (Talbot) starts here" << endl;
@@ -32,7 +32,7 @@ void test_talbot()
     }
     
     /* LaplaceInverseTalbotSerial(int n, double shift, int number_points, double *t, double *y); */
-    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(200, 0.1, number_points, t, f_t) << endl;
+    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(50, 0.5, number_points, t, f_t) << endl;
 
     cout<<endl<<"Talbot's Algorithm points: "<<endl;
     for (int i = 1; i <= number_points; i++) 
