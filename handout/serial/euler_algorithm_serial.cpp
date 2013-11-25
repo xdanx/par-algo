@@ -72,7 +72,7 @@ double euler_algorithm_serial::LaplaceInverseEulerSerial(double c, int n,   int 
     factor = exp(A/(2*l))/(2*l);
     quot   = pow(2.0, m);
     
-    /* Loop over all eval. points t[i] */
+    /* Loop over all evaluating points t[i] */
     for (i = 1; i <= number_points; i++) 
     {
         double current_point = t[i];

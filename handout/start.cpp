@@ -20,7 +20,7 @@ inline void  upperswap(double &u,const double v){if (v>u){u=v;}}
 void test_talbot()
 {
     double t[100], f_t[100];
-    double left = 1, right = 100, h, number_points = 50;
+    double left = 1, right = 120, h, number_points = 50;
     h = abs(right-left)/(number_points - 1);
     
     cout << "Inverse Laplace (Talbot) starts here" << endl;
@@ -58,7 +58,8 @@ void test_talbot()
 void test_euler()
 {
     double t[100], f_t[100];
-    double left = 1, right = 100, norm, number_points = 50.0;
+    double left = 1, right = 12, norm, number_points = 50;
+    double c = 0.5, n=50, m = 50, A = 22, l = 1;
     norm = abs(right-left)/(number_points - 1);
     
     cout << "Inverse Laplace (Euler) starts here" << endl;
@@ -70,32 +71,40 @@ void test_euler()
     }
     
     /* Call order:  c, int n, int m, int l, double A, int number_points, double *t, double *y */
-    cout<< euler_algorithm_serial::LaplaceInverseEulerSerial(0.5, 100, 12, 1, 18.4, 50, t, f_t) << endl;
+    euler_algorithm_serial::LaplaceInverseEulerSerial(c, n, m, l, A, number_points, t, f_t);
 
     cout<<endl<<"Euler's Algorithm points: "<<endl;
+    cout<<"EulerX = [ ";
     for (int i = 1; i <= number_points; i++) 
     {
         cout.precision(10); 
         cout << t[i]<<"  "; 
     }
-    
+    cout<<"] "<<endl;
     
     cout<< endl<< cout<<"Euler's Algorithm results: " << endl;
+    cout<<"EulerY = [ ";
     for (int i = 1; i <= number_points; i++) 
     {
         cout.precision(10); 
         cout<< f_t[i]<< " ";
     }
-    cout<<endl<<endl;
+    cout<<"] "<<endl;
 }
+
+
+
+
+
+
 
 
 int main() 
 {
   cout << "Welcome, agent(s)! Best of luck." << endl;
 
-  test_talbot();  
+  //test_talbot();  
   test_euler();
-
+  
   return 0;
 }
