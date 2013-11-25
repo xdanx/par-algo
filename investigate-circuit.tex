@@ -64,54 +64,43 @@ Whilst the mathematical functions were to be expected, the time-related function
 
 
 \subsubsection{\texttt{ltrace} analysis}
-By running \texttt{ltrace} whilst running the team obtained the library calls used during the computation phase.
+By running \texttt{ltrace} whilst running the team obtained the library calls used during the computation phase. The first and subsequent runs are almost identical, apart from an extra initialisation step. The initialisation step includes a call to \texttt{localtime}, protected by \texttt{cxa\_guard} calls, which are used ``to support thread-safe, one-time initialization of function scope variables''\footnote{\url{http://www.opensource.apple.com/source/libcppabi/libcppabi-14/src/cxa_guard.cxx}} (Figure~\ref{fig:l-calls}).
 
 
-\underline{Initial computation:}\\
-\texttt{
-    time
-    {\color{red}
-        \_\_cxa\_guard\_acquire
-        localtime
-        \_\_cxa\_guard\_release
-    }
-    strftime
-    strftime
-    strtol
-    strtol
-    \_\_muldc3
-    cexp
-    cexp
-    \_\_divdc3
-    \_\_muldc3
-    \_\_muldc3
-    sincos
-    log
-    cexp
-    \_\_divdc3
-    \_\_muldc3
-    cexp
-    \_\_muldc3
-    }
+\begin{figure}[h]
+    \centering
 
-\underline{Subsequent computations:}\\
-\texttt{
-    time
-    strftime
-    strftime
-    strtol
-    strtol
-    \_\_muldc3
-    cexp
-    cexp
-    \_\_divdc3
-    \_\_muldc3
-    \_\_muldc3
-    sincos
-    log
-    cexp
-    \_\_divdc3
-    \_\_muldc3
-    cexp
-    \_\_muldc3
-    }
+    \begin{tabular}{cc}
+    \toprule
+    Initial call & Subsequent calls \\
+
+    \midrule
+
+    \texttt
+        time                                    & time        \\
+        {\color{red} \_\_cxa\_guard\_acquire }  &             \\
+        {\color{red} localtime }                &             \\
+        {\color{red} \_\_cxa\_guard\_release }  &             \\
+        strftime                                & strftime    \\
+        strftime                                & strftime    \\
+        strtol                                  & strtol      \\
+        strtol                                  & strtol      \\
+        \_\_muldc3                              & \_\_muldc3  \\
+        cexp                                    & cexp        \\
+        cexp                                    & cexp        \\
+        \_\_divdc3                              & \_\_divdc3  \\
+        \_\_muldc3                              & \_\_muldc3  \\
+        \_\_muldc3                              & \_\_muldc3  \\
+        sincos                                  & sincos      \\
+        log                                     & log         \\
+        cexp                                    & cexp        \\
+        \_\_divdc3                              & \_\_divdc3  \\
+        \_\_muldc3                              & \_\_muldc3  \\
+        cexp                                    & cexp        \\
+        \_\_muldc3                              & \_\_muldc3  \\
+    \bottomrule
+    \end{tabular}
+
+    \caption{Trace of library calls for the initial and subsequent calls of the function \texttt{L()} . The extra library calls performed in the first function call are highlighted in red.}
+    \label{fig:l-calls}
+\end{figure}

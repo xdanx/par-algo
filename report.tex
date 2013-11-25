@@ -25,6 +25,14 @@
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
 
 %%% PACKAGES
+% Nice package for plotting graphs
+% See excellent guide:
+% http://www.tug.org/TUGboat/tb31-1/tb97wright-pgfplots.pdf
+\usepackage{pgfplots}
+\usetikzlibrary{plotmarks}
+
+\usepackage{pgfplots} % Plots
+\usepackage{pgfplotstable} % Tables
 \usepackage{xcolor} % To color text
 \usepackage[official]{eurosym} % Euro symbol
 \usepackage{booktabs} % for much better looking tables
@@ -36,6 +44,13 @@
 \usepackage{pdfpages}
 \usepackage{wrapfig}
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
 \usepackage{listings}
 \lstset{frame=tb,
   language=BASH,
@@ -76,23 +91,21 @@
 %%% END Article customizations
 
 \title{Parallel Algorithms \\ Classified Assignment}
-\author[1]{Wael Aljeshi\thanks{wael.aljeshi10@imperial.ac.uk}}
-\author[1]{Dan Demeter\thanks{dan.demeter10@imperial.ac.uk}}
-\author[1]{Razvan Rosie\thanks{razvan.rosie10@imperial.ac.uk}}
-\affil[1]{Department of Computing, Imperial College London}
+\author{Wael Aljeshi\thanks{wael.aljeshi10@imperial.ac.uk}}
+\author{Dan Demeter\thanks{dan.demeter10@imperial.ac.uk}}
+\author{Razvan Rosie\thanks{razvan.rosie10@imperial.ac.uk}}
+\affil{Department of Computing, Imperial College London}
 
 \begin{document}
 \maketitle
 
-\begin{abstract}
-killer report...
-\newline
+\renewcommand{\abstractname}{Mission Brief}
 
-{\bf Keywords}: Laplace transform, paralellism, other stuff.
+\begin{abstract}
+A top secret computer system was discovered by extraction squad 429 in the nation of Nukehavistan. Highly detailed snapshots of the machine in operation were handed over, as well as a software implementation of the retrieved circuit board, residing in \texttt{mystery.o}. This report, addressed to the Director of Secret Services\footnote{Sir Robert Hinchcliffe-Smythers-Smythe the 3rd}, details the methodologies of our mission and our findings.
 \end{abstract}
 
 
-\section{Introduction}
 
 \section{Investigating the machine}
 \input{investigate-machine.tex}
@@ -102,14 +115,10 @@ killer report...
 
 \section{Serial Implemantation}
 
-\subsection{Parallel Implemantation}
+\section{Parallel Implemantation}
 
-
-
-\section{Extra Work}
-
-
-
+\section[Analysis Parallelise]{Analysis Parallelise \footnote{read: paralysis (or ``paralylis'')} }
+\input{plot-graphs.tex}
 
 \section{Conclusion}
 
@@ -122,8 +131,5 @@ killer report...
 
   
 \end{thebibliography}
-
-
-
 
 \end{document}          
