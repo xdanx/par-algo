@@ -8,40 +8,7 @@ using namespace std;
 
 #include "mystery.h"
 
-/*
- * 1. Hints
- * бЫСТрЫЙ       = quickly
- * ИНВертер      = inverter
- * КОМПЛексной   = all-inclusive 
- * функции       = features
- * 
- * 2. 2.3328700E 48.8074800N (Laplace's House? - Paris)
- * 
- * 3. Euler
- *
- * 
- * Other hints:
- * 
- * 
- * Returns: the product of a + ib and c + id 
- * __muldc3(0, 0x1999999999999999, minute, 0, hour) 
- * 
- * Algorithm: function f(t)
- * 
- * getTime()
- * 
- * Functions:
- * 
- * __muldc3(double __a, double __b, double __c, double __d)     : Returns: the product of a + ib and c + id
- * __divdc3(double __a, double __b, double __c, double __d)     : Returns: the quotient of (a + ib) / (c + id)
- * expc(double complex z)                                       : The cexp() family of functions return the complex base-e exponential value. 
- * z = log(a) returns the natural logarithm of a .
- * sincos(float _X, _Out_ float * _S, _Out_ float * _C)         : Calculates sine and cosine value of _X 
- * 
- */
-
 const double PI           = 3.141592653589793238462643;      
-const int    MAX_LAPORDER = 60;
 
 int test_case=1;
 inline void  upperswap(double &u,const double v){if (v>u){u=v;}}
@@ -52,27 +19,36 @@ inline void  upperswap(double &u,const double v){if (v>u){u=v;}}
  */
 void test_talbot()
 {
-    double t[100], y[100];
-    double a0 = 0.1, b0 = 15, h, m = 20.0;
-    h = abs(b0-a0)/(m - 1);
+    double t[100], f_t[100];
+    double left = 1, right = 100, h, number_points = 50;
+    h = abs(right-left)/(number_points - 1);
     
     cout << "Inverse Laplace (Talbot) starts here" << endl;
 
-    for (int i = 1; i <= m; i++)
+    for (int i = 1; i <= number_points; i++)
     {
-        y[i] = 0;
-        t[i] = a0 + (i-1) * h; 
+        f_t[i] = 0;
+        t[i] = left + (i-1) * h; 
     }
     
-    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(20, 0.01, m, t, y) << endl;
+    /* LaplaceInverseTalbotSerial(int n, double shift, int number_points, double *t, double *y); */
+    cout<< talbot_algorithm_serial::LaplaceInverseTalbotSerial(200, 0.1, number_points, t, f_t) << endl;
 
-    for (int i = 1; i <= m; i++) 
+    cout<<endl<<"Talbot's Algorithm points: "<<endl;
+    for (int i = 1; i <= number_points; i++) 
     {
         cout.precision(10); 
         cout << t[i]<<"  "; 
-        cout.precision(10); 
-        cout<< y[i]<<endl;
     }
+    
+    
+    cout<< endl<< cout<<"Talbot's Algorithm results: " << endl;
+    for (int i = 1; i <= number_points; i++) 
+    {
+        cout.precision(10); 
+        cout<< f_t[i]<< " ";
+    }
+    cout<<endl<<endl;
 }
 
 /*
@@ -81,39 +57,45 @@ void test_talbot()
  */
 void test_euler()
 {
-    double t[100], y[100];
-    double a0 = 0.1, b0 = 15, h, m = 20.0;
-    h = abs(b0-a0)/(m - 1);
+    double t[100], f_t[100];
+    double left = 1, right = 100, norm, number_points = 50.0;
+    norm = abs(right-left)/(number_points - 1);
     
     cout << "Inverse Laplace (Euler) starts here" << endl;
 
-    for (int i = 1; i <= m; i++)
+    for (int i = 1; i <= number_points; i++)
     {
-        y[i] = 0;
-        t[i] = a0 + (i-1) * h; 
+        f_t[i] = 0;
+        t[i]   = left + (i-1) * norm; 
     }
-    //double c, int n, int m, int l, double A, int anz, double *t, double *y
-    cout<< euler_algorithm_serial::LaplaceInverseEulerSerial(0.1, 20, 20, 20, 18.4, 10, t, y) << endl;
+    
+    /* Call order:  c, int n, int m, int l, double A, int number_points, double *t, double *y */
+    cout<< euler_algorithm_serial::LaplaceInverseEulerSerial(0.5, 100, 12, 1, 18.4, 50, t, f_t) << endl;
 
-    for (int i = 1; i <= m; i++) 
+    cout<<endl<<"Euler's Algorithm points: "<<endl;
+    for (int i = 1; i <= number_points; i++) 
     {
         cout.precision(10); 
         cout << t[i]<<"  "; 
-        cout.precision(10); 
-        cout<< y[i]<<endl;
     }
+    
+    
+    cout<< endl<< cout<<"Euler's Algorithm results: " << endl;
+    for (int i = 1; i <= number_points; i++) 
+    {
+        cout.precision(10); 
+        cout<< f_t[i]<< " ";
+    }
+    cout<<endl<<endl;
 }
-
 
 
 int main() 
 {
   cout << "Welcome, agent(s)! Best of luck." << endl;
-  cout<< L(11, 11)<<endl;
 
   test_talbot();  
   test_euler();
 
   return 0;
 }
-
