@@ -20,7 +20,7 @@ const double PI  =3.141592653589793238462;
 // Algorithm constant - "a positive integer" (Abate, 2006)
 // Division by 2^M is performed, and hence (-M) should not be too close to
 // the smallest double exponent so as to avoid underflow.
-const int M = 50;
+const int M = 30;
 
 // Time points at which to evaluate f(t)
 const double Times[] = {0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5,1.7,1.9,2.1,2.3,2.5,2.7,2.9,3.1,3.3,3.5,3.7,3.9,4.1,4.3,4.5,4.7,4.9,5.1,5.3,5.5,5.7,5.9,6.1,6.3,6.5,6.7,6.9,7.1,7.3,7.5,7.7,7.9,8.1,8.3,8.5,8.7,8.9,9.1,9.3,9.5,9.7,9.9,10.1,10.3,10.5,10.7,10.9,11.1,11.3,11.5,11.7,11.9,12.1};
@@ -49,7 +49,6 @@ void binomDiv2PowM(const int M, double* last_out) {
 		*last_out = prev_value;
 	}
 }
-
 
 
 int main(int argc, char const *argv[]) {
