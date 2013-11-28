@@ -1,12 +1,12 @@
 After agreeing that the machine is in fact an inverter of $Laplace$ transforms, some time was spent investigating 
 this mathematical concept. Directly, the transform can be given in the following way:
-$F(s) =\int_0^\infty \! f(t)e^{-st} \, \mathrm{d}t$.
+$$F(s) =\int_0^\infty \! f(t)e^{-st} \, \mathrm{d}t$$
 
 Since we have established that we need to find the inverse transform, we notice the fact that:
-$f(t) =\int_0^\infty \! F(s)e^{st} \, \mathrm{d}t$. 
+$$f(t) =\int_0^\infty \! F(s)e^{st} \, \mathrm{d}t$$
 \newline
 
-To recap the date we have  gather so far, the agents are facing the following problem:
+To recap the data which we have gathered so far, the agents are facing the following problems:
 \begin{itemize}
 \item{The analytical expression of the function $F$ given by $mystery.o$ is unknown. }
 \item{The $mistery.o$ file only allows for evaluation of the function at some points passed as inputs. }
@@ -14,43 +14,53 @@ To recap the date we have  gather so far, the agents are facing the following pr
 
 Therefore, we have realised that we need to perform numerical inverse of $Inverse$ $Laplace$ $transform$.
 The paper offered us a valuable introduction to the problem that we were facing.
-The $EULER$ algorithm was a starting point, and we proceed to the implementation step:
+The \texttt{EULER} algorithm was a starting point, and we proceed to the implementation step:
 
 \subsection{EULER Algorithm}
-The best description\cite{abate} of the $EULER$ algorithm can be summarised by the following formula:
-$f(t) = \frac{10^{M/3}}{t} \sum\limits_{k=0}^{2M} {\eta_k Re F(\frac{\beta_k}{t}) }$, where $\beta_k = \frac{M ln(10)}{3} + i\pi k$ and $\eta_k = (-1)^{k} *\xi_k$ with $\xi_0 = \frac{1}{2}$, $\xi_k = 1$ for $1 \leq k \leq M$, $\xi_{2M} = \frac{1}{2M}$, $\xi_{2M-k} = \xi_{2M-k+1}+2^{-M}\binom{M}{k}$.
+The best description\cite{abate} of the \texttt{EULER} algorithm can be summarised by the formula:
+$$f(t) = \frac{10^{M/3}}{t} \sum\limits_{k=0}^{2M} {\eta_k Re F(\frac{\beta_k}{t}) }$$
+Where:
+$$\beta_k = \frac{M ln(10)}{3} + i\pi k$$
+$$\eta_k = (-1)^{k} *\xi_k$$
+$$\xi_0 = \frac{1}{2}$$
+$$\xi_k = 1 \text{for} 1 \leq k \leq M$$
+$$\xi_{2M} = \frac{1}{2M}$$
+$$\xi_{2M-k} = \xi_{2M-k+1}+2^{-M}\binom{M}{k}$$
 \newline
 
 The implementation of the algorithm follows the procedure described above and can be described the following manner:
 \begin{itemize}
 \item{Select a size for the parameter M (for the current problem we use M as 30).}
-\item{Define an array $Times$ to store the arguments where of the targeted function $f$.}
+\item{Define an array \texttt{Times} to store the arguments where of the targeted function $f$.}
 \item{Construct an array of factors ($\xi$) which will act as factors in the summation of $F(\frac{\beta_k}{t})$. Set $xi[0] = 1/2$. Fill the elements on positions $1$ $\to$ $M+1$ with 1s. Fill the rest of the array with the factors of the binomial expansion of order $2M$, as presented above.}
 \item{Precompute the constants described by the algorithm.}
 \item{For each point of time $t$, compute the sum described by the algorithm. This part of the code operates in an independent way (since we compute the sum for each point) and is suitable for a parallel implementation.}
-\item{Output the vector $f_st$ containing the results of the evaluations.}
+\item{Output the vector $f_{st}$ containing the results of the evaluations.}
 \end{itemize} 
 
 Our serial implementation described the same graph as the one shown, with its global maxima pointing the hour and the global minima pointing the minute.
 
 
 \subsection{The Dubner-Abate Algorithm}
-After making sure that the $EULER$ method works, the team decided to test other algorithms in order to compare the results and efficiency.
+After making sure that the \texttt{EULER} method works, the team decided to test other algorithms in order to compare the results and efficiency.
 We present here the $Dubner \& Abate$ algorithm, which is also computes the inverse of a $Laplace$ transform as a $Fourier$ cosine series.
-The amtehcematics behind this algorithm is simpler because it does not require the computation of the binomial coefficients (which involve factorials)
-and may produce overflows.
+The mathematics behind this algorithm are simpler because it does not require the computation of the binomial coefficients (which involve factorials) and may produce overflows.
 
-In short, the $Dubner$-$Abate$ algorithm will compute the following: 
-$f(t) = \frac{e^{At}}{q} \sum\limits_{k=1}^{M}{(Re(L(A+t\frac{ki\pi}{q}))* cos(t\frac{k\pi}{q})}$ - $ \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q})* sin(t\frac{k\pi}{q}) )}$.
+In short, the $Dubner$-$Abate$ algorithm will compute the following:
+\begin{align*}
+f(t) = \frac{e^{At}}{q} \sum\limits_{k=1}^{M}{Re(L(A+t\frac{ki\pi}{q}) \cdot cos(t\frac{k\pi}{q}))} \\
+- \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q}) \cdot sin(t\frac{k\pi}{q}) )}
+\end{align*}
 \newline
 
-The  serial implementation of the $Dubner$-$Abate$ algorithm follows the logic described above.
+The serial implementation of the $Dubner$-$Abate$ algorithm follows the logic described above.
 \begin{itemize}
 \item{Select a size for the parameter M (for the current problem we use M as 200, for a reasonable aproximation of the function $f$).}
 \item{Define an array $Times$ to store the arguments where $f$ will be approximated. We also precompute the constants described by the algorithm.} 
-\item{For each point of time $t$, compute the folowing sum: $\sum\limits_{k=1}^{M} {(Re(L(A+t\frac{ki\pi}{q}))* cos(t\frac{k\pi}{q})}$ - $ \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q})* sin(t\frac{k\pi}{q}) )}$. 
+\item{For each point of time $t$, compute the $Dubner$-$Abate$ algorithm's sum above:
+$$\sum\limits_{k=1}^{M} {(Re(L(A+t\frac{ki\pi}{q})) \cdot cos(t\frac{k\pi}{q})} - \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q})* sin(t\frac{k\pi}{q}) )}$$
 This part of the code operates in an independent fashion and (since we compute the sum for each point) and is suitable for a parallel implementation.}
-\item{Output the vector $f_st$ containing the results of the evaluations.}
+\item{Output the vector $f_{st}$ containing the results of the evaluations.}
 \end{itemize}
 The fact that it independently computes $f(t)$  for every point makes this algorithm suitable for parallelization.
 
