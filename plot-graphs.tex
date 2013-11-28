@@ -1,3 +1,27 @@
+%% Place legend below x-axis
+\makeatletter
+\pgfplotsset{
+    every axis x label/.append style={
+        alias=current axis xlabel
+    },
+    legend pos/outer south/.style={
+        /pgfplots/legend style={
+            at={%
+                (%
+                \@ifundefined{pgf@sh@ns@current axis xlabel}%
+                {xticklabel cs:0.5}%
+                {current axis xlabel.south}%
+                )%
+            },
+            anchor=north
+        }
+    }
+}
+\makeatother
+
+
+
+
 % Initialise
 \newcommand{\xlabel}{\@empty}
 \newcommand{\ylabel}{\@empty}
@@ -15,10 +39,12 @@
 	\begin{axis}[
 	xmin = 0,
 	ymin = 0,
+	xmode=log,
 	xlabel = \xlabel,
 	ylabel = \ylabel,
 	% legend
-	legend style={at={(1,0.5)},anchor=east}
+	legend pos=outer south,
+	legend columns=3,
 	]
 
 
@@ -39,7 +65,7 @@
 		#3
 		] {timings.csv};
 
-		\addlegendentry{\textbf{##2 processor}} ;
+		\addlegendentry{\textbf{##2 procs}} ;
 	}
 
 	% Lines to plot
@@ -63,7 +89,7 @@
 \begin{figure}[h]
     \centering
 \createplot{Work}{Runtime (s)}{y = \numprocs-proc}
-\createplot{Work}{Normalised runtime (\%)}{y expr= 100 * \thisrow{\numprocs-proc} / \thisrow{1-proc}}
+%\createplot{Work}{Normalised runtime (\%)}{y expr= 100 * \thisrow{\numprocs-proc} / \thisrow{1-proc}}
     \caption{Comparison of runtime for different number of processors}
     \label{fig:plot-runtime}
 \end{figure}
@@ -110,7 +136,7 @@
 		every last row/.style={after row=\bottomrule}
 	]{timings.csv}
 
-    \caption{Measured runtimes for different number of processors}
+    \caption{Measured runtimes (in seconds) for different number of processors}
     \label{fig:table-runtime}
 \end{figure}
 
