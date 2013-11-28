@@ -17,15 +17,15 @@ The paper offered us a valuable introduction to the problem that we were facing.
 The \texttt{EULER} algorithm was a starting point, and we proceed to the implementation step:
 
 \subsection{EULER Algorithm}
-The best description\cite{abate} of the \texttt{EULER} algorithm can be summarised by the formula:
+The best description of the \texttt{EULER} algorithm can be summarised by the formula:
 $$f(t) = \frac{10^{M/3}}{t} \sum\limits_{k=0}^{2M} {\eta_k Re F(\frac{\beta_k}{t}) }$$
 Where:
 $$\beta_k = \frac{M ln(10)}{3} + i\pi k$$
-$$\eta_k = (-1)^{k} *\xi_k$$
+$$\eta_k = (-1)^{k} \cdot \xi_k$$
 $$\xi_0 = \frac{1}{2}$$
-$$\xi_k = 1 \text{for} 1 \leq k \leq M$$
-$$\xi_{2M} = \frac{1}{2M}$$
-$$\xi_{2M-k} = \xi_{2M-k+1}+2^{-M}\binom{M}{k}$$
+$$\xi_k = 1 \text{, for } 1 \leq k \leq M$$
+$$\xi_{2M-k} = \xi_{2M-k+1}+2^{-M}\binom{M}{k} \text{, for } 1 \leq k < M$$
+$$\xi_{2M} = \frac{1}{2^M}$$
 \newline
 
 The implementation of the algorithm follows the procedure described above and can be described the following manner:
