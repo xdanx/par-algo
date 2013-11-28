@@ -8,8 +8,8 @@ $$f(t) =\int_0^\infty \! F(s)e^{st} \, \mathrm{d}t$$
 
 To recap the data which we have gathered so far, the agents are facing the following problems:
 \begin{itemize}
-\item{The analytical expression of the function $F$ given by $mystery.o$ is unknown. }
-\item{The $mistery.o$ file only allows for evaluation of the function at some points passed as inputs. }
+\item{The analytical expression of the function $F$ given by \texttt{mystery.o} is unknown. }
+\item{The \texttt{mystery.o} file only allows for evaluation of the function at some points passed as inputs. }
 \end{itemize}
 
 Therefore, we have realised that we need to perform numerical inverse of $Inverse$ $Laplace$ $transform$.
@@ -32,7 +32,14 @@ The implementation of the algorithm follows the procedure described above and ca
 \begin{itemize}
 \item{Select a size for the parameter M (for the current problem we use M as 30).}
 \item{Define an array \texttt{Times} to store the arguments where of the targeted function $f$.}
-\item{Construct an array of factors ($\xi$) which will act as factors in the summation of $F(\frac{\beta_k}{t})$. Set $xi[0] = 1/2$. Fill the elements on positions $1$ $\to$ $M+1$ with 1s. Fill the rest of the array with the factors of the binomial expansion of order $2M$, as presented above.}
+\item{Construct an array of factors ($\xi$) which will act as factors in the summation of $F(\frac{\beta_k}{t})$.
+
+	\begin{itemize}
+	\item Set $xi[0] = 1/2$.
+	\item Fill the elements on positions $1$ $\to$ $M+1$ with 1's.
+	\item Fill the rest of the array with the factors of the binomial expansion of order $2M$.
+	\end{itemize}
+}
 \item{Precompute the constants described by the algorithm.}
 \item{For each point of time $t$, compute the sum described by the algorithm. This part of the code operates in an independent way (since we compute the sum for each point) and is suitable for a parallel implementation.}
 \item{Output the vector $f_{st}$ containing the results of the evaluations.}
@@ -57,8 +64,7 @@ The serial implementation of the $Dubner$-$Abate$ algorithm follows the logic de
 \begin{itemize}
 \item{Select a size for the parameter M (for the current problem we use M as 200, for a reasonable aproximation of the function $f$).}
 \item{Define an array $Times$ to store the arguments where $f$ will be approximated. We also precompute the constants described by the algorithm.} 
-\item{For each point of time $t$, compute the $Dubner$-$Abate$ algorithm's sum above:
-$$\sum\limits_{k=1}^{M} {(Re(L(A+t\frac{ki\pi}{q})) \cdot cos(t\frac{k\pi}{q})} - \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q})* sin(t\frac{k\pi}{q}) )}$$
+\item{For each point of time $t$, compute the $Dubner$-$Abate$ algorithm's sum above.
 This part of the code operates in an independent fashion and (since we compute the sum for each point) and is suitable for a parallel implementation.}
 \item{Output the vector $f_{st}$ containing the results of the evaluations.}
 \end{itemize}
