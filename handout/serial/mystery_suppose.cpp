@@ -34,7 +34,7 @@ std::complex<double> shibboleth(double arg1, double arg2)
     str_to_hours =  strtol(nptr,   NULL, 10);
     str_to_mins  = strtol(var228, NULL, 10);
       
-    int mins_divided_by_five = (int) str_to_mins/5;
+    double mins_divided_by_five = static_cast<double>(str_to_mins / 5);
     
     /* 0.25 hardcoded */
     if(mins_divided_by_five < 0.25)
@@ -50,7 +50,7 @@ std::complex<double> shibboleth(double arg1, double arg2)
       alpha = -(str_to_hours + 1);
       beta  = -(str_to_hours - 1);
     }
-            
+
     /* page 6 */
     std::complex<double> muldc0 = std::complex<double>(arg1, arg2) * std::complex<double>(arg1, arg2);
     std::complex<double> cexp0  = exp(std::complex<double>(alpha*arg1, alpha*arg2));
