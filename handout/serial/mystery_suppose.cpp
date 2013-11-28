@@ -39,13 +39,17 @@ std::complex<double> shibboleth(double arg1, double arg2)
     /* 0.25 hardcoded */
     if(mins_divided_by_five < 0.25)
         mins_divided_by_five = 0.25;    
-    
-    if(str_to_hours>12)
-        str_to_hours -= 12;
 
-    /* page 5 */
-    alpha = -(str_to_hours + 1);
-    beta  = -(str_to_hours - 1);
+    if (str_to_hours >= 12) str_to_hours -= 12;
+
+    if(str_to_hours == 0) {
+        alpha = -13;
+        beta = -11;
+    } else {
+      /* page 5 */
+      alpha = -(str_to_hours + 1);
+      beta  = -(str_to_hours - 1);
+    }
             
     /* page 6 */
     std::complex<double> muldc0 = std::complex<double>(arg1, arg2) * std::complex<double>(arg1, arg2);
