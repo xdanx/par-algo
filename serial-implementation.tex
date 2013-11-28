@@ -62,11 +62,11 @@ f(t) = \frac{e^{At}}{q} \sum\limits_{k=1}^{M}{Re(L(A+t\frac{ki\pi}{q}) \cdot cos
 
 The serial implementation of the $Dubner$-$Abate$ algorithm follows the logic described above.
 \begin{itemize}
-\item{Select a size for the parameter M (for the current problem we use M as 200, for a reasonable aproximation of the function $f$).}
+\item{Select a size for the parameter M (for the current problem we use M as 200, for a reasonable approximation of the function $f$).}
 \item{Define an array \texttt{Times} to store the arguments where $f$ will be approximated. We also precompute the constants described by the algorithm.}
 \item{For each point of time $t$, compute the $Dubner$-$Abate$ algorithm's sum above.
 This part of the code operates in an independent fashion and (since we compute the sum for each point) and is suitable for a parallel implementation.}
 \item{Output the vector $f_{st}$ containing the results of the evaluations.}
 \end{itemize}
-The fact that it independently computes $f(t)$  for every point makes this algorithm suitable for parallelization.
+The fact that it independently computes $f(t)$  for every point makes this algorithm suitable for parallelisation.
 

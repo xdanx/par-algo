@@ -1,6 +1,6 @@
 The next step was to investigate the pluggable circuit board, the process and results of which are discussed in this section.
 
-\subsection{Circuit board macroanalysis}
+\subsection{Circuit board macro-analysis}
 The circuit board itself was identified as a product of AMD, housing a 500 MHz AMD Geode LX800 and 256 MB DDR DRAM (Figure~\ref{fig:circuit-board}). Such technology was not believed to exist at the time, and it seems that great efforts have been devoted to keep this technology hidden.
 
 
@@ -26,7 +26,7 @@ After an expensive trip to France, it was determined that the site referred to `
 
 \subsection{Circuit board microanalysis}
 
-With the macroanlysis out of the way, our experts studied the circuit board's functionality through means of the reconstructed \texttt{mystery.o} object file.
+With the macro analysis out of the way, our experts studied the circuit board's functionality through means of the reconstructed \texttt{mystery.o} object file.
 
 
 
@@ -64,7 +64,7 @@ Whilst the mathematical functions were to be expected, the time-related function
 
 
 \subsubsection{\texttt{ltrace} analysis}
-By running \texttt{ltrace} whilst running the team obtained the library calls used during the computation phase. The first and subsequent runs are almost identical, apart from an extra initialisation step. The initialisation step includes a call to \texttt{localtime}, protected by \texttt{cxa\_guard} calls, which are used ``to support thread-safe, one-time initialization of function scope variables''\footnote{\url{http://www.opensource.apple.com/source/libcppabi/libcppabi-14/src/cxa_guard.cxx}} (Figure~\ref{fig:l-calls}).
+By running \texttt{ltrace} whilst running the team obtained the library calls used during the computation phase. The first and subsequent runs are almost identical, apart from an extra initialisation step. The initialisation step includes a call to \texttt{localtime}, protected by \texttt{cxa\_guard} calls, which are used ``to support thread-safe, one-time initialisation of function scope variables''\footnote{\url{http://www.opensource.apple.com/source/libcppabi/libcppabi-14/src/cxa_guard.cxx}} (Figure~\ref{fig:l-calls}).
 
 
 \begin{figure}[h]

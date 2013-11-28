@@ -8,7 +8,7 @@
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 
-%%% Examples of Article customizations
+%%% Examples of Article customisations
 % These packages are optional, depending whether you want the features they provide.
 % See the LaTeX Companion or other references for full information.
 
@@ -113,10 +113,10 @@ A top secret computer system was discovered by extraction squad 429 in the natio
 \section{Investigating the circuit}
 \input{investigate-circuit.tex}
 
-\section{Serial Implemantation}
+\section{Serial Implementation}
 \input{serial-implementation.tex}
 
-\section{Parallel Implemantation}
+\section{Parallel Implementation}
 \input{parallel-implementation.tex}
 
 \section[Analysis Parallelise]{Analysis Parallelise \footnote{read: paralysis (or ``paralylis'')} }
@@ -126,9 +126,9 @@ We now compare the performance of our serial and parallel implementations of the
 
 Figure~\ref{fig:plot-runtime} shows how the runtime of the computation varies with these two parameters. For a fixed number of processors, the run time of the algorithm increases as more work is added, as would be expected.
 
-Figure~\ref{fig:plot-speedup} shows the speedup achieved through parallelisation. We note how the speedup attained improves greatly as we add more work. This corresponds to the declining contribution of communication overhead, more specifically that the communication overhead grows sublinearly at most with respect to the program's fundamental running time.
+Figure~\ref{fig:plot-speedup} shows the speedup achieved through parallelisation. We note how the speedup attained improves greatly as we add more work. This corresponds to the declining contribution of communication overhead, more specifically that the communication overhead grows sub-linearly at most with respect to the program's fundamental running time.
 
-Finally, figure~\ref{fig:plot-efficiency} shows the efficiency of computation, that is, the percentage of useful work done per processor; it quantifies the contribution of parallelism overheads. We find that the efficiency increases with increased work, assymptotically approaching $100\%$, that is the serial algorithm.
+Finally, figure~\ref{fig:plot-efficiency} shows the efficiency of computation, that is, the percentage of useful work done per processor; it quantifies the contribution of parallelism overheads. We find that the efficiency increases with increased work, asymptotically approaching $100\%$, that is the serial algorithm.
 
 
 
