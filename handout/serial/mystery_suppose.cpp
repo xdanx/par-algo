@@ -12,8 +12,6 @@ using namespace std;
  */
 std::complex<double> shibboleth(double arg1, double arg2)
 {
-    std::complex<double> result(0,0);
-
     char *nptr = new char[200];
     char *var228 = new char[200];
     long int str_to_hours;
@@ -53,7 +51,7 @@ std::complex<double> shibboleth(double arg1, double arg2)
     std::complex<double> muldc0 = std::complex<double>(arg1, arg2) * std::complex<double>(arg1, arg2);
     std::complex<double> cexp0  = exp(std::complex<double>(alpha*arg1, alpha*arg2));
     std::complex<double> cexp1  = exp(std::complex<double>(beta *arg1, beta *arg2));
-    std::complex<double> cexp2  = exp(std::complex<double>(arg1*(-1)*mins_divided_by_five, arg2*(-1)*mins_divided_by_five));
+    std::complex<double> cexp2  = exp(std::complex<double>(arg1*(-1)*(mins_divided_by_five+0.25), arg2*(-1)*(mins_divided_by_five+0.25)));
           
     
     /* page 7 */
@@ -68,31 +66,14 @@ std::complex<double> shibboleth(double arg1, double arg2)
     std::complex<double> cexp3   = exp(std::complex<double>(arg1*(-1)*(mins_divided_by_five-0.25), arg2*(-1)*(mins_divided_by_five-0.25)));    
     std::complex<double> muldc4  = std::complex<double>(real(divdc1), imag(divdc1))*std::complex<double>(real(cexp3), imag(cexp3));  
     
-    result = std::complex<double>(real(muldc1)+real(muldc2)-real(muldc3)-real(muldc4), imag(muldc1)+imag(muldc2)-imag(muldc3)-imag(muldc4) );
-    cout<< result<<endl;
-    /*
-    cout<< "muldc[0]"<< muldc0<<endl;
-    cout<< "cexp[0]"<< cexp0<<endl;
-    cout<< "cexp[1]"<< cexp1<<endl;
-    cout<< "divdc[0]"<< divdc0<<endl;
-    cout<< "muldc[1]"<< muldc1<<endl;
-    cout<< "muldc[2]"<< muldc2<<endl;
-    cout<< "muldc[3]"<< muldc3<<endl;
-    cout<< "cexp[2]"<< cexp2<<endl;
-    cout<< "divdc[1]"<< divdc1<<endl;
-    cout<< "muldc[3]"<< muldc3<<endl;
-    cout<< "cexp[3]"<< cexp3<<endl;
-    cout<< "muldc[4]"<< muldc4<<endl;
-    cout<< "alpha" << alpha<<endl;
-    cout<< "beta" << beta<<endl;
-     */ 
+    std::complex<double>  result = std::complex<double>(real(muldc1)+real(muldc2)-real(muldc3)-real(muldc4), imag(muldc1)+imag(muldc2)-imag(muldc3)-imag(muldc4) );
   
     return result;
 }    
 
 int main()
 {
-    shibboleth(-21, 234);
-    cout<<   L(-21, 234)<<endl;
+    cout<< shibboleth(1.23, -10)<<endl;
+    cout<<          L(1.23, -10)<<endl;
     return 0;
 }
