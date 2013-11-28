@@ -40,12 +40,19 @@ We present here the $Dubner \& Abate$ algorithm, which is also computes the inve
 The amtehcematics behind this algorithm is simpler because it does not require the computation of the binomial coefficients (which involve factorials)
 and may produce overflows.
 
-In short, the $Dubner$-$Abate$ algorithm will compute the following:
-$f(t) = \frac{e^{At}}{q} \sum\limits_{k=1}^{M} {A* cos(t\frac{k\pi}{q}) - \frac{k\pi}{q}* sin(t\frac{k\pi}{q}) }$
+In short, the $Dubner$-$Abate$ algorithm will compute the following: 
+$f(t) = \frac{e^{At}}{q} \sum\limits_{k=1}^{M}{(Re(L(A+t\frac{ki\pi}{q}))* cos(t\frac{k\pi}{q})}$ - $ \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q})* sin(t\frac{k\pi}{q}) )}$.
+\newline
 
-
-The  serial implementation of the $Dubner$-$Abate$ algorithm follows the logic described above. The fact that 
-it independently computes $f(t)$  for every point makes this algorithm suitable for parallelization.
+The  serial implementation of the $Dubner$-$Abate$ algorithm follows the logic described above.
+\begin{itemize}
+\item{Select a size for the parameter M (for the current problem we use M as 200, for a reasonable aproximation of the function $f$).}
+\item{Define an array $Times$ to store the arguments where $f$ will be approximated. We also precompute the constants described by the algorithm.} 
+\item{For each point of time $t$, compute the folowing sum: $\sum\limits_{k=1}^{M} {(Re(L(A+t\frac{ki\pi}{q}))* cos(t\frac{k\pi}{q})}$ - $ \sum\limits_{k=1}^{M}{Im(L(A+t\frac{ki\pi}{q})* sin(t\frac{k\pi}{q}) )}$. 
+This part of the code operates in an independent fashion and (since we compute the sum for each point) and is suitable for a parallel implementation.}
+\item{Output the vector $f_st$ containing the results of the evaluations.}
+\end{itemize}
+The fact that it independently computes $f(t)$  for every point makes this algorithm suitable for parallelization.
 
 
 

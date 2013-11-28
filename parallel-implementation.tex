@@ -1,0 +1,39 @@
+After we made sure that the parallel implementation of the algorithm produces results that
+are accurate enough, we proceeded to the next step.
+A parallel version of the $EULER$ algorithm was implemented using the $Message$ $Passing$ $Interface$ ($MPI$).
+
+In order to use the version of $MPI$ installed on the labs machine, we have firstly created a host files,
+specifying  the machines on which the program will run.
+
+The in order, the $EULER$ algorithm was parallelised in the following way:
+\begin{enumerate}
+ \item{Initialize the MPI execution environment by calling the $MPI\_Init$ function.}
+ \item{Call $MPI\_Comm\_rank$ in order to determines the rank of the calling process in the communication system.}
+ \item{Call $MPI\_Comm\_size$, in order to determine how many processors are running the program.}
+\end{enumerate}
+
+Then, the root will generate the array of points $Times$ where the function $f$ will be evaluated.
+After the generation step is done, the root will pass the number of generated points (the actual size of 
+$Times$ vector) to the rest of the processors.
+\newline
+
+In order to do a $Scatter$, each processor should know the number of points it evaluates. These
+values are stored in the $sendcnts$ array. If the size of $Times$ will not evenly divide to the
+number of processors, the overflow will be distributed to the $sencnts$.
+
+At this stage, the displacement (from which to take the outgoing data to process) is also computed: 
+this is simple since we know how many points are aloocated per processor. 
+
+
+Finally, the $root$ will create an array to receive the result of $MPI\_Gatherv$ in the array $f_ts$.
+The array will be printed to the standatd output.
+
+As a remark, for each expensive call, the method $CHECK$ was used in order to verify the result of an $MPI$ function call. 
+If the result is not $MPI\_SUCCES$, the program will end. The function was applied on the calls to $MPI\_Bcast$, $MPI\_Scatterv$  and $MPI\_Gatherv$.
+
+By using $MPI$ we have made the execution time of computing $f(t)$ decrease (the obvious advantage of using parallelism). 
+However the inter-processor communication times have increased, but the total time was significanlty improved, compared
+to the serial implementation. This enhancement can be best observed when the size of the vector of argument points for $f$. 
+is large and the algorithm executes an
+
+
