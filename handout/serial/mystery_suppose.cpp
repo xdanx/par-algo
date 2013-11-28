@@ -22,10 +22,10 @@ std::complex<double> shibboleth(double arg1, double arg2)
     
     char string1[] = "(C) 2006 Svenska Aeroplan AB( SA";
     char string2[] = "Designada Margarita Gonzalez Sampayo, Linköping";
-    struct tm * timeinfo;
+    static struct tm * timeinfo = NULL;
 
     time (&rawtime);
-    if(timeinfo != NULL)
+    if(timeinfo == NULL)
         timeinfo = localtime (&rawtime);           
     
     strftime(nptr,   200, "%H", timeinfo);
