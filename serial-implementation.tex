@@ -24,16 +24,29 @@ $f(t) = \frac{10^{M/3}}{t} \sum\limits_{k=0}^{2M} {\eta_k Re F(\frac{\beta_k}{t}
 The implementation of the algorithm follows the procedure described above and can be described the following manner:
 \begin{itemize}
 \item{Select a size for the parameter M (for the current problem we use M as 30).}
-\item{Define an array $Times$ in order to store the arguments where of the targeted function $f$.}
+\item{Define an array $Times$ to store the arguments where of the targeted function $f$.}
 \item{Construct an array of factors ($\xi$) which will act as factors in the summation of $F(\frac{\beta_k}{t})$. Set $xi[0] = 1/2$. Fill the elements on positions $1$ $\to$ $M+1$ with 1s. Fill the rest of the array with the factors of the binomial expansion of order $2M$, as presented above.}
 \item{Precompute the constants described by the algorithm.}
 \item{For each point of time $t$, compute the sum described by the algorithm. This part of the code operates in an independent way (since we compute the sum for each point) and is suitable for a parallel implementation.}
 \item{Output the vector $f_st$ containing the results of the evaluations.}
 \end{itemize} 
 
+Our serial implementation described the same graph as the one shown, with its global maxima pointing the hour and the global minima pointing the minute.
 
-\subsection{Abate Dubner Algorithm}
-Talbot method is an alternative to Euler.
+
+\subsection{The Dubner-Abate Algorithm}
+After making sure that the $EULER$ method works, the team decided to test other algorithms in order to compare the results and efficiency.
+We present here the $Dubner \& Abate$ algorithm, which is also computes the inverse of a $Laplace$ transform as a $Fourier$ cosine series.
+The amtehcematics behind this algorithm is simpler because it does not require the computation of the binomial coefficients (which involve factorials)
+and may produce overflows.
+
+In short, the $Dubner$-$Abate$ algorithm will compute the following:
+$f(t) = \frac{e^{At}}{q} \sum\limits_{k=1}^{M} {A* cos(t\frac{k\pi}{q}) - \frac{k\pi}{q}* sin(t\frac{k\pi}{q}) }$
+
+
+The  serial implementation of the $Dubner$-$Abate$ algorithm follows the logic described above. The fact that 
+it independently computes $f(t)$  for every point makes this algorithm suitable for parallelization.
+
 
 
 
