@@ -1,6 +1,6 @@
 /*
-  Numerically computes the Inverse Laplace Transform using the Euler Algorithm
-  as defined in:
+  Numerically computes in parallel the Inverse Laplace Transform using the Euler
+  Algorithm as defined in:
 
   Abate, Joseph, and Ward Whitt.
   "A unified framework for numerically inverting Laplace transforms."
@@ -14,13 +14,17 @@
 #include <complex>
 #include <iostream>
 #include <mpi.h>
+#include <sstream>
 #include <vector>
   
 #include "mystery.h"
 
-
+using std::cerr;
+using std::complex;
+using std::cout;
+using std::endl;
+using std::stringstream;
 using std::vector;
-
 
 const double PI  =3.141592653589793238462;
 
@@ -29,18 +33,44 @@ const double PI  =3.141592653589793238462;
 // the smallest double exponent so as to avoid underflow.
 const int M = 30;
 
-// Time points at which to evaluate f(t)
-double Times[] = {0.1,0.3,0.5,0.7,0.9,1.1,1.3,1.5,1.7,1.9,2.1,2.3,2.5,2.7,2.9,3.1,3.3,3.5,3.7,3.9,4.1,4.3,4.5,4.7,4.9,5.1,5.3,5.5,5.7,5.9,6.1,6.3,6.5,6.7,6.9,7.1,7.3,7.5,7.7,7.9,8.1,8.3,8.5,8.7,8.9,9.1,9.3,9.5,9.7,9.9,10.1,10.3,10.5,10.7,10.9,11.1,11.3,11.5,11.7,11.9,12.1};
-const int kNumTimes = sizeof(Times) / sizeof(*Times);
+
+// Create time points in the range [from, to] with the given step size
+vector<double> BuildTimePoints(const double from, const double step,
+               const double to) {
+    vector<double> times;
+    std::back_insert_iterator<vector<double>> out(times);
+
+    for (double i = from ; i<= to ; i += step, ++out) {
+        *out = i;
+    }
+
+    return times;
+}
+
+
+// Convert string to a number.
+// Return true on success.
+template <typename T>
+bool StrToNum (const char* text, T* out) {
+    stringstream stream(text);
+    T result;
+    if (stream >> result) {
+        *out = result;
+        return true;
+    }
+    cerr << text << endl;
+    return false;
+}
 
 
 // Check result or die 
 void CHECK(const int result) {
   if (result != MPI_SUCCESS) {
-    std::cerr << "An MPI operation failed" << std::endl;
+    cerr << "An MPI operation failed" << endl;
     exit(1);
   }
 }
+
 
 // Compute n! / ( r! (n-r)! ) using log-gamma function
 // See: http://en.wikipedia.org/wiki/Gamma_function
@@ -89,9 +119,24 @@ const vector<double> BuildXi(const int M) {
 int main(int argc, char *argv[]) {
     // Initialise MPI
     if (MPI_Init(&argc,&argv) != MPI_SUCCESS) {
-        std::cerr << "MPI init failed" << std::endl;
+        cerr << "MPI init failed" << endl;
         return 1;
     }
+
+    // Get arguments
+    double from, step, to;
+    if (argc != 4) {
+        cerr << "Expected 3 arguments, actual " << argc << endl;
+        return 1;
+    } else if (!StrToNum(argv[1], &from) || !StrToNum(argv[2], &step) ||
+               !StrToNum(argv[3], &to)) {
+        cerr << "Arguments must be doubles!" << endl;
+        return 1;
+    } else if (from > to || step <= 0) {
+        cerr << "Arguments do not form a valid time series." << endl;
+        return 1;
+    }
+
 
     // Determine MPI Constants
     const int kRootRank = 0;
@@ -100,6 +145,20 @@ int main(int argc, char *argv[]) {
 
     int kNumProcs;
     MPI_Comm_size(MPI_COMM_WORLD, &kNumProcs);
+
+
+    /* Generate time series and related info */
+    vector<double> Times;
+    int kNumTimes;
+
+    // Root generates time points
+    if (kMyRank == kRootRank) {
+      Times = BuildTimePoints(from, step, to);
+      kNumTimes = Times.size();
+    }
+
+    // Communicate number of time points
+    CHECK(MPI_Bcast(&kNumTimes, 1, MPI_INT, kRootRank, MPI_COMM_WORLD));
 
 
     /* Scatter 'Times' across processors */
@@ -130,11 +189,11 @@ int main(int argc, char *argv[]) {
     }
 
 
-    /* Receive buffer - accomodating up to 1 extra element*/
+    /* Receive buffer - accomodating up to 1 extra element */
     const int kNumLocalTimes = kBaseTimesPerProc + (kMyRank < kNumOverflownTimes ? 1 : 0);
     double localTimes[kNumLocalTimes];
 
-    CHECK(MPI_Scatterv(Times, sendcnts, displs, MPI_DOUBLE,
+    CHECK(MPI_Scatterv(&Times[0], sendcnts, displs, MPI_DOUBLE,
                        localTimes, kNumLocalTimes, MPI_DOUBLE,
                        kRootRank, MPI_COMM_WORLD));
 
@@ -157,7 +216,7 @@ int main(int argc, char *argv[]) {
         // Compute sum term
         double sum = 0;
         for (int k = 0; k < kXiSize; ++k) {
-            const std::complex<double> f_result = L(beta_real / t, k * PI / t);
+            const complex<double> f_result = L(beta_real / t, k * PI / t);
             sum += f_result.real() * pow(-1, k) * xi[k];
         }
 
@@ -167,19 +226,24 @@ int main(int argc, char *argv[]) {
     }
 
 
-    //// ROOOOOOOOOOOOOOOOT
-    double f_ts[kNumTimes];
+    /* Gather computation results */
+
+    // Allocate array on root to receive points
+    double* f_ts;
+    if (kMyRank == kRootRank) {
+      f_ts = new double[kNumTimes];
+    }
 
     CHECK(MPI_Gatherv(local_f_ts, kNumLocalTimes, MPI_DOUBLE,
                       f_ts, sendcnts, displs, MPI_DOUBLE,
                       kRootRank, MPI_COMM_WORLD));
 
 
-    // ROOOOOOOOOOOOOOOOT
+    // Print output on root
     if (kMyRank == kRootRank) {
         // Output t,f(t)
         for (int t = 0 ; t < kNumTimes ; ++t) {
-            std::cout << Times[t] << "," << f_ts[t] << std::endl;
+            cout << Times[t] << "," << f_ts[t] << endl;
         }
     }
 
