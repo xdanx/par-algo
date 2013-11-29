@@ -104,3 +104,34 @@ By running \texttt{ltrace} whilst running the team obtained the library calls us
     \caption{Trace of library calls for the initial and subsequent calls of the function \texttt{L()} . The extra library calls performed in the first function call are highlighted in red.}
     \label{fig:l-calls}
 \end{figure}
+
+
+\subsection{The Curious Case of \texttt{mystery.o}}
+
+Our agent from the \emph{Hidden special unit for reverse analysis and decompilation} was able to successfully decompile the mysterious \texttt{mystery.o} file and write the equivalent C++ code. Further testing combined with the latest research in the field of \emph{Reasoning about programs} confirmed that our code produces exactly the same results as the initial object file. Below are the pseudo-code function calls that are used to compute the final answer:
+
+-- insert here the pseudo-code for functions ---
+
+We would like to report some anomalies we have detected in the file, which we believe were put in place by the circuit designer in order to make the disassembly process more difficult:
+\subsubsection{Extra strings}
+We have noticed two ambiguous strings written at the beginning of the file: <INSERT HERE THE STRINGS>. They provide some insights into who wrote the initial software and the year it might have been written.
+\subsubsection{Computing $y = x^{782768}$, where $x = 0.999 \ldots$}
+Due to the fact that $0.999 \ldots < 1$ and floating point numbers can't be represented exactly, the result of this exponentiation will be approximately $0$.
+\subsubsection{Standard library functions: \\ \texttt{sincos(x)} and \texttt{log(x + 1)}}
+The argument for the \texttt{sincos} function is $y$, the argument for the \texttt{log} function is $(y + 1)$, where $y$ is the result of the multiplication discussed above. Because $y \approx 0$, \texttt{sincos(y)} returns $(0,1)$ and \texttt{log(y+1)} returns $0$.
+\subsubsection{Bogus while loops}
+During the research phase, our agent has identified four repetitive structures. One repetitive structure is used to compute $y = x^{782768}$ in a very ineffective way. The other two repetitive structures have the same implementation and they serve as iterators through the two initial strings defined in the program. Their main purpose is to compute the offset between a specific \texttt{ASCII} character \texttt{( 0x80 )} and the initial strings. Due to the fact that the strings are hard-coded, the results computed by both the strings will always be \texttt{35 ( 0x23 )} and \texttt{49 ( 0x31 )}.
+Lastly, the 4th structure is the \texttt{main} while loop. Its loop condition is:
+$$49 + 35 + sin(y) + cos(y) + log(1+y) - 29 - 48 + y > 20$$
+
+This simplifies to:
+$$7 + sin(y) + cos(y) + log(1+y) > 20$$
+Because y is a constant (0), $log(1+y) + sin(y) + cos(y)$ will be 1, so the loop condition $(8 > 20)$ will never be true.
+
+Our agent is not sure whether these assembly artifacts and a lot of hard-coded values have been inserted in order to trick us or the compiler just generated general purpose code.
+
+\subsubsection{Compiler (ab)uses the stack base pointer \texttt{(RBP)}}
+During the analysis, it has been found that the \texttt{L()} function does not properly set the stack base pointer and instead it uses it as a general purpose register. This implies the fact that new variables are not created on the stack. The compiler is aware at compile time of the total number of variables used in the program and this is a known technique used by compilers in such situations.
+
+\subsubsection{Closing remarks}
+During the decompilation process our agent has used a test-driven approach, by writing scripts that would automate testing our computed function against the original \texttt{mystery.o} one. We used the program \textbf{faketime} in order to generate 1440 tests cases: 1 test for each minute of the day. Then we used a parallel diff program that would call both our function and the original \texttt{L()} one with different parameters and report any different results. Part of the tools used by the agent were the GNU Debugger \text{(gdb)}, with the peda plugin and the IDA program. No automated decomompilation tools have been used (because there are none for 64-bit programs).
