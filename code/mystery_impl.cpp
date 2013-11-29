@@ -2,8 +2,7 @@
 #include <complex>
 #include <iostream>
 #include <cstdlib>
-#include "euler_algorithm_serial.h"
-#include "../mystery.h"
+#include "mystery.h"
 
 using namespace std;
 
@@ -20,8 +19,8 @@ std::complex<double> shibboleth(double arg1, double arg2)
     
     time_t rawtime;
     
-    char string1[] = "(C) 2006 Svenska Aeroplan AB( SA";
-    char string2[] = "Designada Margarita Gonzalez Sampayo, Linköping";
+    static char string1[] = "(C) 2006 Svenska Aeroplan AB( SA";
+    static char string2[] = "Designada Margarita Gonzalez Sampayo, Linköping";
     static struct tm * timeinfo = NULL;
 
     time (&rawtime);
@@ -77,7 +76,11 @@ std::complex<double> shibboleth(double arg1, double arg2)
 
 int main()
 {
-    cout<< shibboleth(1.23, -10)<<endl;
-    cout<<          L(1.23, -10)<<endl;
+    cerr<< "Please input values on the standard input." << endl;
+    double x, y;
+    while (cin >> x && cin >> y) {
+        cout<< shibboleth(x, y)<<endl;
+        cout<<          L(x, y)<<endl;
+    }
     return 0;
 }
