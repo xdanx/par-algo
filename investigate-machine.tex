@@ -30,7 +30,6 @@ USA
 The team was then able to retrieve an excerpt\footnote{An online version was independently found at \url{http://www.columbia.edu/~ww2040/Fall03/LaplaceInversionJoC95.pdf}} of a document \emph{Numerical Inversion of Laplace Transforms of Probability Distributions}.
 
 
-
 \subsection{Cyrillic script}
 Some Cyrillic script was found on the machine, believed by our Business and Strategy experts to be used for marketing the machine in the Russian market.
 
@@ -122,3 +121,27 @@ The circuit board is therefore used to plot a curve representing the current (12
 	\caption{Fox news anchor Megyn Kelly commenting on the discovery.}
 	\label{fig:essentially}
 \end{figure}
+
+Our agent from the "Hidden special unit for reverse analysis and decompilation" was able to successfully decompile the mysterious `mistery.o` file and write the equivalent C++ code. Further testing combined with the latest research in the filed of Reasoning about programs confirmed that our code produces exactly the same results as the initial object file. Below are the pseudo-code function calls that are used to compute the final answer: 
+
+-- insert here the pseudo-code for functions ---
+
+We would like to report some anomalies we have detected in the file, which we believe that have been put in place by the circuit designer in order to make the disassembly process more difficult:
+
+\begin{itemize}
+ \item Extra strings.
+ We have noticed 2 ambiguous strings written at the beginning of the file: <INSERT HERE THE STRINGS>. They provide some insights into who wrote the initial software and the year it might have been written. 
+ \item $y = (x)^782768$, where x = 0.99999999999999 
+ Due to the fact that 0.99999999999999 < 1 and because floating point numbers can't be represented exactly by the 64bit processors, the results of this multiplication will be 0. Throughout the run of our program we have determined that the x values never changes so the result is always 0.
+ \item stdlib sincos(x) and log(x + 1) functions
+ The argument for the sincos function is y and (y + 1) for the log function, where y is the results of the multiplication discussed above. Because y is constant, sincos(y) returns (0,1) and log(y+1) returns 0;
+ \item Bogus while loops
+ During the research our agent has identified 4 repetitive structures. One repetitive structure is used to compute $y = (x)^782768$ in a very ineffective way. The other 2 repetitive structures have the same implementation and they serve as iterators through the 2 initial strings defined in the program. Their main purpose is to compute the offset between a specific ASCII character ( 0x80 ) and the initial strings. Because the strings are hard-coded, the results computed by both the strings will be always 35 ( 0x23 ) and 49 ( 0x31 ). 
+ Lastly, the 4th structure is the "main" while loop. The repetitive condition for this loop is as follows: $(0x31 + sin(y) + cos(y) + log(1+y) - 29 - 48 + y) > 20$, which simplifies to $(7 + sin(y) + cos(y) + log(1+y) > 20)$. Because y is a constant (0), $log(1+y) + sin(y) + cos(y)$ will be 1, so the loop condition is will never be true $8 > 20$.
+ Our agent is not sure whether these assembly artifacts and a lot of hard-coded values have been inserted in order to trick us or the compiler just generated general purpose code. 
+ \item Compiler uses the stack base pointer (RBP)
+ During the analysis, it has been found that the L() function does not properly set the stack base pointer and instead it uses it as a general purpose register. This implies the fact that new variables are not created on the stack. The compiler is aware at compile time of the total number of variables used in the program and this is a known technique used by compilers in such situations. 
+  
+\end{itemize}
+
+During the decompilation process our agent has used a test-driven approach, by writing scripts that would automate testing our computed function against the original "mistery.o" one. We used the program \textbf{faketime} in order to generate 1440 tests cases: 1 test for each minute in a day. Then we used a parallel diff program that would call both our function and the original L() one with different parameters and report any different results. Part of the tools used by the agent were the GNU Debugger gbd, with the peda plugin and the IDA program. No automated tools have been used ( because there is none for 64bit programs ).
