@@ -108,39 +108,40 @@ By running \texttt{ltrace} whilst running the team obtained the library calls us
 
 \subsection{The Curious Case of \texttt{mystery.o}}
 
-Our agent from the \emph{Hidden special unit for reverse analysis and decompilation} was able to successfully decompile the mysterious \texttt{mystery.o} file and write the equivalent C++ code. Further testing combined with the latest research in the field of \emph{Reasoning about programs} confirmed that our code produces exactly the same results as the initial object file. Below are some of the pseudo-code function calls that are used to compute the final answer:
+Our agent from the \emph{Hidden special unit for reverse analysis and decompilation} was able to successfully decompile the mysterious \texttt{mystery.o} file and write the equivalent C++ code. Further testing combined with the latest research in the field of \emph{Reasoning about programs} confirmed that our code produces exactly the same results as the initial object file. Below are some of the pseudo-code function calls that are used to compute the final answer (see \texttt{code//mystery\_impl.cpp} for full source):
 
-\begin{verbatim}
+\begin{lstlisting}[language=C++]
 muldc0  = complex(arg1,arg2) * complex(arg1,arg2);
 cexp0   = exp (complex(alpha * arg1, alpha * arg2);
 cexp1   = exp (complex(beta  * arg1, beta  * arg2);
-cexp2   = exp (complex(arg1  * -1 * (mins/5 + 0.25), 
-                       arg2  * -1 * (mins/5 + 0.25)));
+cexp2   = exp (complex(arg1  * -1 * (mins/5 + 0.25), arg2  * -1 * (mins/5 + 0.25)));
 [...]
-multdc4 = complex(real(divdc1), imag(divdc1)) * 
-          complex(real(cexp3) , imag(cexp3));
-result  = compelx(real(muldc1) + real(muldc2) - real(muldc3) - real(muldc4),
-                  imag(muldc1) + imag(muldc2) - imag(muldc3) - imag(muldc4));
+multdc4 = complex(real(divdc1), imag(divdc1)) * complex(real(cexp3) , imag(cexp3));
+result  = compelx(real(muldc1) + real(muldc2) - real(muldc3) - real(muldc4), imag(muldc1) + imag(muldc2) - imag(muldc3) - imag(muldc4));
 
-\end{verbatim}
+\end{lstlisting}
 
 We would like to report some anomalies we have detected in the file, which we believe were put in place by the circuit designer in order to make the disassembly process more difficult:
 \subsubsection{Extra strings}
 We have noticed two ambiguous strings written at the beginning of the file:
-\texttt{(C) 2006 Svenska Aeroplan AB (SAAB) Designad av Margarita Gonz\'{a}lez Sampayo, Linkoping}
-\texttt{(C) 2006 Swedish Aeroplane Company Limited (SAAB) Designed by Margarita Gonz\'{a}lez Sampayo, Linkoping}
-They provide some insights into who wrote the initial software and the year it might have been written.
+\begin{quote}
+\texttt{(C) 2006 Svenska Aeroplan AB (SAAB)}
+\end{quote}
+\begin{quote}
+\texttt{Designad av Margarita Gonz\'{a}lez Sampayo, Linkoping}
+\end{quote}
+They provide some insights into who wrote the initial software and the year it might have been written in.
 \subsubsection{Computing $y = x^{782768}$, where $x = 0.999 \ldots$}
 Due to the fact that $0.999 \ldots < 1$ and floating point numbers can't be represented exactly, the result of this exponentiation will be approximately $0$.
 \subsubsection{Standard library functions: \\ \texttt{sincos(x)} and \texttt{log(x + 1)}}
 The argument for the \texttt{sincos} function is $y$, the argument for the \texttt{log} function is $(y + 1)$, where $y$ is the result of the multiplication discussed above. Because $y \approx 0$, \texttt{sincos(y)} returns $(0,1)$ and \texttt{log(y+1)} returns $0$.
 \subsubsection{Bogus while loops}
-During the research phase, our agent has identified four repetitive structures. One repetitive structure is used to compute $y = x^{782768}$ in a very ineffective way. The other two repetitive structures have the same implementation and they serve as iterators through the two initial strings defined in the program. Their main purpose is to compute the offset between a specific \texttt{ASCII} character \texttt{( 0x80 )} and the initial strings. Due to the fact that the strings are hard-coded, the results computed by both the strings will always be \texttt{35 ( 0x23 )} and \texttt{49 ( 0x31 )}.
+During the research phase, our agent has identified four repetitive structures. One repetitive structure is used to compute $y = x^{782768}$ in a very inefficient way. The other two repetitive structures have the same implementation and they serve as iterators through the two initial strings defined in the program. Their main purpose is to compute the offset between a specific \texttt{ASCII} character \texttt{( 0x80 )} and the initial strings. Due to the fact that the strings are hard-coded, the results computed by both the strings will always be \texttt{35 ( 0x23 )} and \texttt{49 ( 0x31 )}.
 Lastly, the 4th structure is the \texttt{main} while loop. Its loop condition is:
 $$49 + 35 + sin(y) + cos(y) + log(1+y) - 29 - 48 + y > 20$$
 
-This simplifies to:
-$$7 + sin(y) + cos(y) + log(1+y) > 20$$
+Which simplifies to:
+$$sin(y) + cos(y) + log(1+y) > 13$$
 Because y is a constant (0), $log(1+y) + sin(y) + cos(y)$ will be 1, so the loop condition $(8 > 20)$ will never be true.
 
 Our agent is not sure whether these assembly artifacts and a lot of hard-coded values have been inserted in order to trick us or the compiler just generated general purpose code.

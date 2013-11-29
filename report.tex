@@ -9,7 +9,7 @@
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 
 %%% Examples of Article customisations
-% These packages are optional, depending whether you want the features they provide.
+% These packages are optional, depending whether you want the features t	hey provide.
 % See the LaTeX Companion or other references for full information.
 
 %%% PAGE DIMENSIONS
@@ -43,7 +43,9 @@
 \usepackage{authblk}
 \usepackage{pdfpages}
 \usepackage{wrapfig}
+\usepackage{float}
 \usepackage{hyperref}
+\usepackage{pgfplotstable,booktabs,colortbl,lmodern}
 \hypersetup{
     colorlinks,
     citecolor=black,
@@ -53,7 +55,7 @@
 }
 \usepackage{listings}
 \lstset{frame=tb,
-  language=BASH,
+  language=C++		,
   aboveskip=3mm,
   belowskip=3mm,
   showstringspaces=false,
@@ -108,7 +110,7 @@ A top secret computer system was discovered by extraction squad 429 in the natio
 
 
 \section{Investigating the machine}
-\input{investigate-machine.tex}
+\input{investigate-machine.tex} 
 
 \section{Investigating the circuit}
 \input{investigate-circuit.tex}

@@ -112,7 +112,7 @@
 
 
 % Table
-\begin{figure}[h]
+\begin{figure}
     \centering
 
 	\pgfplotstabletypesetfile[
@@ -134,7 +134,6 @@
 		},
 		every last row/.style={after row=\bottomrule}
 	]{timings.csv}
-
     \caption{Measured run-times (in seconds) for different number of processors}
     \label{fig:table-runtime}
 \end{figure}

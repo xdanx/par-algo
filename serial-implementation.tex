@@ -18,7 +18,7 @@ The \texttt{EULER} algorithm was a starting point, and we proceed to the impleme
 
 \subsection{EULER Algorithm}
 The best description of the \texttt{EULER} algorithm can be summarised by the formula:
-$$f(t) = \frac{10^{M/3}}{t} \sum\limits_{k=0}^{2M} {\eta_k Re F(\frac{\beta_k}{t}) }$$
+$$f(t) = \frac{10^{M/3}}{t} \sum\limits_{k=0}^{2M} {\eta_k Re( F(\frac{\beta_k}{t}) )}$$
 Where:
 $$\beta_k = \frac{M ln(10)}{3} + i\pi k$$
 $$\eta_k = (-1)^{k} \cdot \xi_k$$
@@ -28,11 +28,11 @@ $$\xi_{2M-k} = \xi_{2M-k+1}+2^{-M}\binom{M}{k} \text{, for } 1 \leq k < M$$
 $$\xi_{2M} = \frac{1}{2^M}$$
 \newline
 
-The implementation of the algorithm follows the procedure described above and can be described the following manner:
+The implementation of the algorithm (see \texttt{code/euler.cpp}) follows the procedure described above and can be summarised in the following manner:
 \begin{itemize}
 \item{Select a size for the parameter M (for the current problem we use M as 30).}
 \item{Define an array \texttt{Times} to store the arguments where of the targeted function $f$.}
-\item{Construct an array of factors ($\xi$) which will act as factors in the summation of $F(\frac{\beta_k}{t})$.
+\item{Construct an array of factors ($\xi$) that will act as factors in the summation of $F(\frac{\beta_k}{t})$.
 
 	\begin{itemize}
 	\item Set $xi[0] = 1/2$.
@@ -45,13 +45,13 @@ The implementation of the algorithm follows the procedure described above and ca
 \item{Output the vector $f_{st}$ containing the results of the evaluations.}
 \end{itemize} 
 
-Our serial implementation described the same graph as the one shown, with its global maxima pointing the hour and the global minima pointing the minute.
+Our serial implementation described the same graph as the one shown, with its global maxima pointing to the hour and the global minima pointing to the minute.
 
 
 \subsection{The Dubner-Abate Algorithm}
-After making sure that the \texttt{EULER} method works, the team decided to test other algorithms in order to compare the results and efficiency.
-We present here the $Dubner \& Abate$ algorithm, which is also computes the inverse of a $Laplace$ transform as a $Fourier$ cosine series.
-The mathematics behind this algorithm are simpler because it does not require the computation of the binomial coefficients (which involve factorials) and may produce overflows.
+After making sure that the \texttt{EULER} implementation works, the team decided to test other algorithms in order to compare the results and efficiency.
+We present here the $Dubner \& Abate$ algorithm, which is also computes the inverse of a $Laplace$ transform as a $Fourier$ series.
+The mathematics behind this algorithm is simpler because it does not require the computation of the binomial coefficients (which involve factorials) and may produce overflows.
 
 In short, the $Dubner$-$Abate$ algorithm will compute the following:
 \begin{align*}
@@ -66,7 +66,7 @@ The serial implementation of the $Dubner$-$Abate$ algorithm follows the logic de
 \item{Define an array \texttt{Times} to store the arguments where $f$ will be approximated. We also precompute the constants described by the algorithm.}
 \item{For each point of time $t$, compute the $Dubner$-$Abate$ algorithm's sum above.
 This part of the code operates in an independent fashion and (since we compute the sum for each point) and is suitable for a parallel implementation.}
-\item{Output the vector $f_{st}$ containing the results of the evaluations.}
+\item{Output the vector \texttt{f\_ts} containing the results of the evaluations.}
 \end{itemize}
 The fact that it independently computes $f(t)$  for every point makes this algorithm suitable for parallelisation.
 
